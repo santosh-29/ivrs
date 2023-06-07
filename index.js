@@ -8,13 +8,14 @@ const accountSid = "AC66cc6e075a23c0f6d5bd1e8a37e22a18";
 const authToken = "a149462d2d45eb1787386a690b270b29";
 const client = require("twilio")(accountSid, authToken);
 
-app.get('/', (req, res) => {
-  res.json({"message": 'server working'})
-})
+app.get("/", (req, res) => {
+  let url = req.protocol + "://" + req.get("host");
+  res.json({ message: "server working", url });
+});
 
 app.post("/make-call", (req, res) => {
   const phoneNumber = req.body.phoneNumber;
-
+  let url = req.protocol + "://" + req.get("host");
   // Make a call and play the IVRS message
   client.calls
     .create({
@@ -22,10 +23,9 @@ app.post("/make-call", (req, res) => {
       to: phoneNumber,
       from: "+13203825643",
       method: "POST",
-      action: "/handle-input",
+      action: url + "/handle-input",
     })
     .then((call) => console.log(call.sid));
-
   res.sendStatus(200);
 });
 
