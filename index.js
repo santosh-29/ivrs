@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 
 app.post("/make-call", (req, res) => {
   try {
-    const phoneNumber = req.body.phoneNumber;
+    const phoneNumber = req.body.phoneNumber + "/handle-input";
     let url = "https://" + req.get("host");
     // Make a call and play the IVRS message
     client.calls
@@ -24,7 +24,7 @@ app.post("/make-call", (req, res) => {
         to: phoneNumber,
         from: "+13203825643",
         method: "POST",
-        action: url + "/handle-input",
+        action: url,
       })
       .then((call) => {
         console.log(call.sid, url);
