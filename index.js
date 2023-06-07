@@ -55,7 +55,7 @@ app.post("/handle-input", (req, res) => {
         response = "<Response><Say>Invalid input.</Say></Response>";
         break;
     }
-    res.type("text/xml");
+    res.type("application/xml");
     console.log(response);
     res.send(response);
   } catch (err) {
