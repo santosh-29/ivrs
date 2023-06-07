@@ -8,6 +8,10 @@ const accountSid = "AC66cc6e075a23c0f6d5bd1e8a37e22a18";
 const authToken = "a149462d2d45eb1787386a690b270b29";
 const client = require("twilio")(accountSid, authToken);
 
+app.get('/', (req, res) => {
+  res.json({"message": 'server working'})
+})
+
 app.post("/make-call", (req, res) => {
   const phoneNumber = req.body.phoneNumber;
 
@@ -27,27 +31,26 @@ app.post("/make-call", (req, res) => {
 
 // Endpoint for receiving user input from the IVRS call
 
-app.post('/handle-input', (req, res) => {
-    const userInput = req.body.Digits;
-  
-    // Process user input
-    let response;
-    switch (userInput) {
-      case '1':
-        response = '<Response><Say>You approved the request.</Say></Response>';
-        break;
-      case '2':
-        response = '<Response><Say>You denied the request.</Say></Response>';
-        break;
-      default:
-        response = '<Response><Say>Invalid input.</Say></Response>';
-        break;
-    }
-    res.type('text/xml');
-    console.log(response);
-    res.send(response);
-  });
-  
+app.post("/handle-input", (req, res) => {
+  const userInput = req.body.Digits;
+
+  // Process user input
+  let response;
+  switch (userInput) {
+    case "1":
+      response = "<Response><Say>You approved the request.</Say></Response>";
+      break;
+    case "2":
+      response = "<Response><Say>You denied the request.</Say></Response>";
+      break;
+    default:
+      response = "<Response><Say>Invalid input.</Say></Response>";
+      break;
+  }
+  res.type("text/xml");
+  console.log(response);
+  res.send(response);
+});
 
 // Start the server
 const port = 3001;
