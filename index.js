@@ -4,6 +4,8 @@ const app = express();
 
 app.use(bodyParser.json());
 
+const VoiceResponse = require("twilio").twiml.VoiceResponse;
+
 const accountSid = "AC66cc6e075a23c0f6d5bd1e8a37e22a18";
 const authToken = "ee3decb9aa339985c32105b1c1a064fb";
 const client = require("twilio")(accountSid, authToken);
@@ -15,7 +17,7 @@ app.get("/", (req, res) => {
 
 app.post("/make-call", (req, res) => {
   try {
-    const phoneNumber = req.body.phoneNumber ;
+    const phoneNumber = req.body.phoneNumber;
     let url = "https://" + req.get("host") + "/handle-input";
     // Make a call and play the IVRS message
     client.calls
@@ -24,12 +26,36 @@ app.post("/make-call", (req, res) => {
         to: phoneNumber,
         from: "+13203825643",
         method: "POST",
-        action: url,
+        // action: url,
       })
       .then((call) => {
         console.log("Call performed!\n");
         console.log(call.sid, url);
-        res.sendStatus(200);
+        try {
+          const userInput = req.body.Digits;
+
+          // Process user input
+          let response;
+          switch (userInput) {
+            case "1":
+              response =
+                "<Response><Say>You approved the request.</Say></Response>";
+              break;
+            case "2":
+              response =
+                "<Response><Say>You denied the request.</Say></Response>";
+              break;
+            default:
+              response = "<Response><Say>Invalid input.</Say></Response>";
+              break;
+          }
+          res.type("application/xml");
+          console.log(response);
+          res.send(response);
+        } catch (err) {
+          res.sendStatus(400);
+        }
+        // res.sendStatus(200);
       });
   } catch (err) {
     res.sendStatus(400);
